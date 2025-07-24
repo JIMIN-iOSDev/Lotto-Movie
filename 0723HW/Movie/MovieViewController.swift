@@ -138,20 +138,20 @@ extension MovieViewController: ViewDesignProtocol {
         
         rankLabel.snp.makeConstraints { make in
             make.top.equalTo(searchTextField.snp.bottom).offset(40)
-            make.leading.equalToSuperview().offset(40)
-            make.width.equalTo(10)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalTo(20)
         }
         
         rankLabel2.snp.makeConstraints { make in
             make.top.equalTo(rankLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(40)
-            make.width.equalTo(10)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalTo(20)
         }
         
         rankLabel3.snp.makeConstraints { make in
             make.top.equalTo(rankLabel2.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(40)
-            make.width.equalTo(10)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalTo(20)
         }
         
         titleLabel.snp.makeConstraints { make in
