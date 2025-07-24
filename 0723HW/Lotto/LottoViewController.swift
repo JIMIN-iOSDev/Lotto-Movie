@@ -15,6 +15,17 @@ class LottoViewController: UIViewController {
     private let dateLabel = UILabel()
     private let resultLabel = UILabel()
     
+    private let num1 = UILabel()
+    private let num2 = UILabel()
+    private let num3 = UILabel()
+    private let num4 = UILabel()
+    private let num5 = UILabel()
+    private let num6 = UILabel()
+    private let num7 = UILabel()
+    private let num8 = UILabel()
+//    private let back1 = UIImageView()
+    private let lottoNumber = UIStackView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
@@ -29,6 +40,17 @@ extension LottoViewController: ViewDesignProtocol {
         view.addSubview(infoLabel)
         view.addSubview(dateLabel)
         view.addSubview(resultLabel)
+        view.addSubview(lottoNumber)
+        
+        lottoNumber.addArrangedSubview(num1)
+        lottoNumber.addArrangedSubview(num2)
+        lottoNumber.addArrangedSubview(num3)
+        lottoNumber.addArrangedSubview(num4)
+        lottoNumber.addArrangedSubview(num5)
+        lottoNumber.addArrangedSubview(num6)
+        lottoNumber.addArrangedSubview(num7)
+        lottoNumber.addArrangedSubview(num8)
+//        lottoNumber.addArrangedSubview(back1)
     }
     
     func configureLayout() {
@@ -54,6 +76,12 @@ extension LottoViewController: ViewDesignProtocol {
             make.top.equalTo(infoLabel.snp.bottom).offset(60)
             make.width.equalTo(170)
             make.centerX.equalToSuperview()
+        }
+        
+        lottoNumber.snp.makeConstraints { make in
+            make.top.equalTo(resultLabel.snp.bottom).offset(30)
+            make.horizontalEdges.equalToSuperview().inset(20)
+            make.size.equalTo((UIScreen.main.bounds.width - 40) / 8)
         }
     }
     
@@ -81,5 +109,21 @@ extension LottoViewController: ViewDesignProtocol {
         resultLabel.textColor = .black
         resultLabel.font = .boldSystemFont(ofSize: 25)
         resultLabel.textAlignment = .center
+        
+        lottoNumber.axis = .horizontal
+        lottoNumber.distribution = .fillEqually
+        lottoNumber.spacing = 4
+        lottoNumber.backgroundColor = .orange
+        
+        num1.text = "1"
+        num1.textAlignment = .center
+        num2.text = "1"
+        num3.text = "1"
+        num4.text = "1"
+        num5.text = "1"
+        num6.text = "1"
+        num7.text = "1"
+        num8.text = "1"
+        
     }
 }
