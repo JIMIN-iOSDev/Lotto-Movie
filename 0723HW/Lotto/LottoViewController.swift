@@ -7,13 +7,50 @@
 
 import UIKit
 import SnapKit
+import Alamofire
 
 class LottoViewController: UIViewController {
 
-    private let roundTextField = UITextField()
-    private let infoLabel = UILabel()
-    private let dateLabel = UILabel()
-    private let resultLabel = UILabel()
+    private let pickerView = UIPickerView()
+    private lazy var roundTextField = {
+        let tf = UITextField()
+        tf.borderStyle = .roundedRect
+        tf.layer.borderColor = UIColor.systemGray5.cgColor
+        tf.layer.borderWidth = 1
+        tf.layer.cornerRadius = 5
+        tf.clipsToBounds = true
+        tf.backgroundColor = .white
+        tf.font = .boldSystemFont(ofSize: 20)
+        tf.textAlignment = .center
+        tf.inputView = pickerView
+        return tf
+    }()
+    private let infoLabel = {
+        let label = UILabel()
+        label.text = "당첨번호 안내"
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 15, weight: .semibold)
+        return label
+    }()
+    private let dateLabel = {
+        let label = UILabel()
+        label.textColor = .gray
+        label.font = .systemFont(ofSize: 13)
+        label.textAlignment = .right
+        return label
+    }()
+    private let lineView = {
+        let line = UIView()
+        line.backgroundColor = .systemGray6
+        return line
+    }()
+    private let resultLabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .boldSystemFont(ofSize: 25)
+        label.textAlignment = .center
+        return label
+    }()
     
     private let num1 = UILabel()
     private let num2 = UILabel()
@@ -23,7 +60,6 @@ class LottoViewController: UIViewController {
     private let num6 = UILabel()
     private let num7 = UILabel()
     private let num8 = UILabel()
-//    private let back1 = UIImageView()
     private let lottoNumber = UIStackView()
     
     override func viewDidLoad() {
@@ -31,6 +67,43 @@ class LottoViewController: UIViewController {
         configureHierarchy()
         configureLayout()
         configureView()
+        callRequest(drwNo: 1181)
+        
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        
+    }
+    
+    func callRequest(drwNo: Int) {
+        let url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(drwNo)"
+        AF.request(url, method: .get).responseDecodable(of: Lotto.self) { response in
+            switch response.result {
+            case .success(let value):
+                self.roundTextField.text = "\(drwNo)"
+                self.dateLabel.text = "\(value.drwNoDate) 추첨"
+                self.resultLabel.text = "\(value.drwNo)회 당첨결과"
+            case .failure(let error):
+                print("fail", error)
+            }
+        }
+    }
+}
+
+extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return 1181
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return "\(1181 - row)"
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        callRequest(drwNo: 1181 - row)
     }
 }
 
@@ -39,6 +112,7 @@ extension LottoViewController: ViewDesignProtocol {
         view.addSubview(roundTextField)
         view.addSubview(infoLabel)
         view.addSubview(dateLabel)
+        view.addSubview(lineView)
         view.addSubview(resultLabel)
         view.addSubview(lottoNumber)
         
@@ -50,7 +124,6 @@ extension LottoViewController: ViewDesignProtocol {
         lottoNumber.addArrangedSubview(num6)
         lottoNumber.addArrangedSubview(num7)
         lottoNumber.addArrangedSubview(num8)
-//        lottoNumber.addArrangedSubview(back1)
     }
     
     func configureLayout() {
@@ -72,9 +145,16 @@ extension LottoViewController: ViewDesignProtocol {
             make.width.equalTo(120)
         }
         
+        lineView.snp.makeConstraints { make in
+            make.top.equalTo(infoLabel.snp.bottom).offset(15)
+            make.leading.equalTo(infoLabel.snp.leading)
+            make.trailing.equalTo(dateLabel.snp.trailing)
+            make.height.equalTo(2)
+        }
+        
         resultLabel.snp.makeConstraints { make in
-            make.top.equalTo(infoLabel.snp.bottom).offset(60)
-            make.width.equalTo(170)
+            make.top.equalTo(lineView.snp.bottom).offset(40)
+            make.width.equalTo(200)
             make.centerX.equalToSuperview()
         }
         
@@ -87,28 +167,6 @@ extension LottoViewController: ViewDesignProtocol {
     
     func configureView() {
         view.backgroundColor = .white
-        
-        roundTextField.borderStyle = .roundedRect
-        roundTextField.layer.borderColor = UIColor.lightGray.cgColor
-        roundTextField.layer.borderWidth = 1
-        roundTextField.layer.cornerRadius = 5
-        roundTextField.clipsToBounds = true
-        roundTextField.backgroundColor = .white
-        roundTextField.inputView = UIPickerView()
-        
-        infoLabel.text = "당첨번호 안내"
-        infoLabel.textColor = .black
-        infoLabel.font = .systemFont(ofSize: 15, weight: .semibold)
-        
-        dateLabel.text = "8888-88-88 추첨"
-        dateLabel.textColor = .gray
-        dateLabel.font = .systemFont(ofSize: 13)
-        dateLabel.textAlignment = .right
-        
-        resultLabel.text = "1181회 당첨결과"
-        resultLabel.textColor = .black
-        resultLabel.font = .boldSystemFont(ofSize: 25)
-        resultLabel.textAlignment = .center
         
         lottoNumber.axis = .horizontal
         lottoNumber.distribution = .fillEqually
