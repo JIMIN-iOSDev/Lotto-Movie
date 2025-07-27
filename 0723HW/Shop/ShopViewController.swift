@@ -9,7 +9,7 @@ import UIKit
 
 class ShopViewController: UIViewController {
 
-    private lazy var searchBar = {
+    lazy var searchBar = {
         let searchbar = UISearchBar()
         searchbar.delegate = self
         searchbar.placeholder = "브랜드, 상품, 프로필, 태그 등"
@@ -25,16 +25,22 @@ class ShopViewController: UIViewController {
         configureLayout()
         configureView()
     }
-
 }
 
 extension ShopViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print(#function)
+        guard let text = searchBar.text, text.count > 1 else {
+            print("글자 수가 2미만 입니다")
+            return
+        }
         let vc = ResultViewController()
+        vc.searchText = text
+        vc.callRequest(query: text)
         navigationController?.pushViewController(vc, animated: true)
         navigationItem.backButtonTitle = ""
         navigationController?.navigationBar.tintColor = .white
+        searchBar.text = ""
+        view.endEditing(true)
     }
 }
 
@@ -52,5 +58,7 @@ extension ShopViewController: ViewDesignProtocol {
     
     func configureView() {
         view.backgroundColor = .black
+        title = "영캠러의 쇼핑쇼핑"
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
     }
 }

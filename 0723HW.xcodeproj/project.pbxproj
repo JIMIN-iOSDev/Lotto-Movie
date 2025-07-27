@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EC35BA152E3206D000DD1CB7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = EC35BA142E3206D000DD1CB7 /* Alamofire */; };
+		EC9A5CF32E35DBAF00ED6A0F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = EC9A5CF22E35DBAF00ED6A0F /* Kingfisher */; };
 		EC9B3E4E2E30F69200E9549E /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EC9B3E4D2E30F69200E9549E /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC9A5CF32E35DBAF00ED6A0F /* Kingfisher in Frameworks */,
 				EC9B3E4E2E30F69200E9549E /* SnapKit in Frameworks */,
 				EC35BA152E3206D000DD1CB7 /* Alamofire in Frameworks */,
 			);
@@ -87,6 +89,7 @@
 			packageProductDependencies = (
 				EC9B3E4D2E30F69200E9549E /* SnapKit */,
 				EC35BA142E3206D000DD1CB7 /* Alamofire */,
+				EC9A5CF22E35DBAF00ED6A0F /* Kingfisher */,
 			);
 			productName = 0723HW;
 			productReference = EC9B3E342E30F60800E9549E /* 0723HW.app */;
@@ -119,6 +122,7 @@
 			packageReferences = (
 				EC9B3E4C2E30F69200E9549E /* XCRemoteSwiftPackageReference "SnapKit" */,
 				EC35BA132E3206D000DD1CB7 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				EC9A5CF12E35DBAF00ED6A0F /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EC9B3E352E30F60800E9549E /* Products */;
@@ -366,6 +370,14 @@
 				minimumVersion = 5.10.2;
 			};
 		};
+		EC9A5CF12E35DBAF00ED6A0F /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.5.0;
+			};
+		};
 		EC9B3E4C2E30F69200E9549E /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -381,6 +393,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EC35BA132E3206D000DD1CB7 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		EC9A5CF22E35DBAF00ED6A0F /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC9A5CF12E35DBAF00ED6A0F /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		EC9B3E4D2E30F69200E9549E /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
