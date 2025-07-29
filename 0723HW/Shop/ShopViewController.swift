@@ -35,6 +35,8 @@ extension ShopViewController: UISearchBarDelegate {
         }
         let vc = ResultViewController()
         vc.searchText = text
+        vc.list.removeAll()
+        vc.currentPage = 1
         vc.callRequest(query: text)
         navigationController?.pushViewController(vc, animated: true)
         navigationItem.backButtonTitle = ""

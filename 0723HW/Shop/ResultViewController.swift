@@ -35,8 +35,11 @@ class ResultViewController: UIViewController {
         return label
     }()
     
-    var list: Shop = Shop(total: 0, items: [])
+    var list: [ShopList] = []
     var searchText: String?
+    var currentPage = 1
+    var isEnd = false
+    
     private let numberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -51,7 +54,7 @@ class ResultViewController: UIViewController {
     }
     
     func callRequest(query: String) {
-        let url = "https://openapi.naver.com/v1/search/shop.json?query=\(query)&display=100"
+        let url = "https://openapi.naver.com/v1/search/shop.json?query=\(query)&display=30&start=\(currentPage * 30 + 1)"
         let header: HTTPHeaders = [
             "X-Naver-Client-Id": "PfZWdQl4Ow2hZsu3tGQI",
             "X-Naver-Client-Secret": "4GzFGmEtFr"
@@ -61,8 +64,16 @@ class ResultViewController: UIViewController {
             .responseDecodable(of: Shop.self) { response in
                 switch response.result {
                 case .success(let value):
-                    self.list = value
+                    self.list.append(contentsOf: value.items)
                     self.collectionView.reloadData()
+                    if self.currentPage == 1 {
+                        self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+                    }
+                    if (self.currentPage * 30 + 1) < value.total {
+                        self.isEnd = false
+                    } else {
+                        self.isEnd = true
+                    }
                     self.totalLabel.text = "\(self.numberFormatter.string(for: value.total) ?? "0") 개의 검색 결과"
                 case .failure(let error):
                     print("fail", error)
@@ -73,12 +84,12 @@ class ResultViewController: UIViewController {
 
 extension ResultViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return list.items.count
+        return list.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCollectionViewCell.identifier, for: indexPath) as! ShopCollectionViewCell
-        cell.configureData(row: list.items[indexPath.item])
+        cell.configureData(row: list[indexPath.item])
         
         DispatchQueue.main.async {
             cell.likeButton.layer.cornerRadius = cell.likeButton.frame.width / 2
@@ -86,6 +97,16 @@ extension ResultViewController: UICollectionViewDelegate, UICollectionViewDataSo
         cell.likeButton.clipsToBounds = true
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == (list.count - 3) && isEnd == false {
+            if let text = searchText {
+                currentPage += 1
+                callRequest(query: text)
+                print(currentPage)
+            }
+        }
     }
 }
 
@@ -107,6 +128,7 @@ extension ResultViewController: ViewDesignProtocol {
     }
     
     func configureView() {
+        view.backgroundColor = .black
         title = searchText
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
     }
