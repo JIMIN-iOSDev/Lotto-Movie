@@ -7,8 +7,8 @@
 
 import Foundation
 
-protocol ViewDesignProtocol: AnyObject {
+@objc protocol ViewDesignProtocol: AnyObject {
     func configureHierarchy()
     func configureLayout()
-    func configureView()
+    @objc optional func configureView()
 }

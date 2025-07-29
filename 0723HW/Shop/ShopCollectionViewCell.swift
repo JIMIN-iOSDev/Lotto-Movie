@@ -56,7 +56,6 @@ class ShopCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         configureHierarchy()
         configureLayout()
-        configureView()
     }
     
     required init?(coder: NSCoder) {
@@ -112,9 +111,6 @@ extension ShopCollectionViewCell: ViewDesignProtocol {
             make.trailing.bottom.equalTo(image).inset(8)
             make.size.equalTo(30)
         }
-    }
-    
-    func configureView() {
     }
 }
 
