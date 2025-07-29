@@ -63,16 +63,13 @@ class ShopCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override func layoutSubviews() {
-//        likeButton.layer.cornerRadius = likeButton.frame.width / 2
-//        likeButton.clipsToBounds = true
-//    }
-    
     func configureData(row: ShopList) {
         let url = URL(string: row.image)
         image.kf.setImage(with: url)
         brand.text = row.mallName
-        title.text = row.title.htmlEscaped
+        DispatchQueue.main.async {
+            self.title.text = row.title.htmlEscaped
+        }
         price.text = numberFormatter.string(for: Int(row.lprice))
     }
     

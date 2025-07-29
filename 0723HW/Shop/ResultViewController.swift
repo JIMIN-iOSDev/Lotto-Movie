@@ -90,12 +90,6 @@ extension ResultViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCollectionViewCell.identifier, for: indexPath) as! ShopCollectionViewCell
         cell.configureData(row: list[indexPath.item])
-        
-//        DispatchQueue.main.async {
-//            cell.likeButton.layer.cornerRadius = cell.likeButton.frame.width / 2
-//        }
-//        cell.likeButton.clipsToBounds = true
-        
         return cell
     }
     
