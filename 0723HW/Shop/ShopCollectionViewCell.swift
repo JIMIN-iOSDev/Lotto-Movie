@@ -75,6 +75,10 @@ class ShopCollectionViewCell: UICollectionViewCell {
         title.text = row.title.htmlEscaped
         price.text = numberFormatter.string(for: Int(row.lprice))
     }
+    
+    override func draw(_ rect: CGRect) {
+        likeButton.layer.cornerRadius = likeButton.frame.width / 2
+    }
 }
 
 extension ShopCollectionViewCell: ViewDesignProtocol {
@@ -87,9 +91,9 @@ extension ShopCollectionViewCell: ViewDesignProtocol {
     }
     
     func configureLayout() {
-        image.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()
-            make.height.equalTo(image.snp.width)
+        image.snp.makeConstraints {
+            $0.top.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(image.snp.width)
         }
         
         brand.snp.makeConstraints { make in
