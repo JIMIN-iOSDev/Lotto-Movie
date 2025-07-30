@@ -71,37 +71,28 @@ class ResultViewController: UIViewController {
         configureView()
     }
     
-    func callRequest(query: String) {
-        let url = "https://openapi.naver.com/v1/search/shop.json?query=\(query)&display=30&start=\(currentPage * 30 + 1)"
-        let header: HTTPHeaders = [
-            "X-Naver-Client-Id": "PfZWdQl4Ow2hZsu3tGQI",
-            "X-Naver-Client-Secret": "4GzFGmEtFr"
-        ]
-        
-        AF.request(url, method: .get, headers: header)
-            .responseDecodable(of: Shop.self) { response in
-                switch response.result {
-                case .success(let value):
-                    self.totalLabel.text = "\(self.numberFormatter.string(for: value.total) ?? "0") 개의 검색 결과"
-                    
-                    self.list.append(contentsOf: value.items)
-                    self.verticalCollectionView.reloadData()
-                    if self.currentPage == 0 {
-                        self.verticalCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-                    }
-                    if ((self.currentPage + 1) * 30) < value.total {
-                        self.isEnd = false
-                    } else {
-                        self.isEnd = true
-                    }
-                    
-                    self.horizontalList.append(contentsOf: value.items)
-                    self.horizontalCollectionView.reloadData()
-                case .failure(let error):
-                    print("fail", error)
-                }
+    func callRequest(query: String, currentPage: Int) {
+        NetworkManager.shared.callRequest(query: query, currentPage: currentPage) { value in
+            self.totalLabel.text = "\(self.numberFormatter.string(for: value.total) ?? "0") 개의 검색 결과"
+            
+            self.list.append(contentsOf: value.items)
+            self.verticalCollectionView.reloadData()
+            if self.currentPage == 0 {
+                self.verticalCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             }
+            if ((self.currentPage + 1) * 30) < value.total {
+                self.isEnd = false
+            } else {
+                self.isEnd = true
+            }
+            
+            self.horizontalList.append(contentsOf: value.items)
+            self.horizontalCollectionView.reloadData()
+        } fail: {
+            print("실패")
+        }
     }
+        
 }
 
 extension ResultViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -131,7 +122,7 @@ extension ResultViewController: UICollectionViewDelegate, UICollectionViewDataSo
             if indexPath.row == (list.count - 3) && isEnd == false {
                 if let text = searchText {
                     currentPage += 1
-                    callRequest(query: text)
+                    callRequest(query: text, currentPage: currentPage)
                 }
             }
         }

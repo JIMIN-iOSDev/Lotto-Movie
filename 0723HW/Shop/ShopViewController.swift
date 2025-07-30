@@ -37,7 +37,7 @@ extension ShopViewController: UISearchBarDelegate {
         vc.searchText = text
         vc.list.removeAll()
         vc.currentPage = 0
-        vc.callRequest(query: text)
+        vc.callRequest(query: text, currentPage: vc.currentPage)
         navigationController?.pushViewController(vc, animated: true)
         navigationItem.backButtonTitle = ""
         navigationController?.navigationBar.tintColor = .white
