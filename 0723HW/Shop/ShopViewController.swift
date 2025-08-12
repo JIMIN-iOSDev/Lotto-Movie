@@ -8,6 +8,8 @@
 import UIKit
 
 class ShopViewController: UIViewController {
+    
+    private let viewModel = ShopViewModel()
 
     lazy var searchBar = {
         let searchbar = UISearchBar()
@@ -24,25 +26,33 @@ class ShopViewController: UIViewController {
         configureHierarchy()
         configureLayout()
         configureView()
+        bindViewModel()
+    }
+    
+    private func bindViewModel() {
+        viewModel.navigation = { resultVC in
+            self.navigateToResult(VC: resultVC)
+        }
+        viewModel.clearSearchText = {
+            self.searchBar.text = ""
+        }
+        
+        viewModel.endEditing = {
+            self.view.endEditing(true)
+        }
+    }
+    
+    private func navigateToResult(VC: ResultViewController) {
+        navigationController?.pushViewController(VC, animated: true)    // 바로 VC 넣으면 데이터 설정한 게 연동이 안되고 새로운 빈 VC를 생성하는 거임
+        navigationItem.backButtonTitle = ""
+        navigationController?.navigationBar.tintColor = .white
     }
 }
 
+
 extension ShopViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text, text.count > 1 else {
-            print("글자 수가 2미만 입니다")
-            return
-        }
-        let vc = ResultViewController()
-        vc.searchText = text
-        vc.list.removeAll()
-        vc.currentPage = 0
-        vc.callRequest(query: text, currentPage: vc.currentPage)
-        navigationController?.pushViewController(vc, animated: true)
-        navigationItem.backButtonTitle = ""
-        navigationController?.navigationBar.tintColor = .white
-        searchBar.text = ""
-        view.endEditing(true)
+        viewModel.searchButtonTapped(text: searchBar.text)
     }
 }
 
