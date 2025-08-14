@@ -10,6 +10,8 @@ import SnapKit
 import Alamofire
 
 class ResultViewController: UIViewController {
+    
+    let viewModel = ResultViewModel()
 
     private let totalLabel = {
         let label = UILabel()
@@ -52,78 +54,57 @@ class ResultViewController: UIViewController {
         return cv
     }()
     
-    var list: [ShopList] = []
-    var horizontalList: [ShopList] = []
-    var searchText: String?
-    var currentPage = 0
-    var isEnd = false
-    
-    private let numberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
         configureLayout()
         configureView()
+        bindData()
     }
     
-    func callRequest(query: String, currentPage: Int) {
-        NetworkManager.shared.callRequest(query: query, currentPage: currentPage) { value in
-            self.totalLabel.text = "\(self.numberFormatter.string(for: value.total) ?? "0") 개의 검색 결과"
-            
-            self.list.append(contentsOf: value.items)
+    private func bindData() {
+        viewModel.output.totalText.bind { _ in
+            self.totalLabel.text = self.viewModel.output.totalText.value
+        }
+        
+        viewModel.output.verticalReload.bind { _ in
             self.verticalCollectionView.reloadData()
-            if self.currentPage == 0 {
-                self.verticalCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-            }
-            if ((self.currentPage + 1) * 30) < value.total {
-                self.isEnd = false
-            } else {
-                self.isEnd = true
-            }
-            
-            self.horizontalList.append(contentsOf: value.items)
+        }
+    
+        viewModel.output.horizontalReload.bind { _ in
             self.horizontalCollectionView.reloadData()
-        } fail: {
-            print("실패")
         }
     }
-        
 }
 
 extension ResultViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == verticalCollectionView {
-            return list.count
+            return viewModel.list.count
         } else {
-            return horizontalList.count
+            return viewModel.horizontalList.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == verticalCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCollectionViewCell.identifier, for: indexPath) as! ShopCollectionViewCell
-            cell.configureData(row: list[indexPath.item])
+            cell.configureData(row: viewModel.list[indexPath.item])
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HorizontalCollectionViewCell.identifier, for: indexPath) as! HorizontalCollectionViewCell
-            cell.configure(row: horizontalList[indexPath.item])
+            cell.configure(row: viewModel.horizontalList[indexPath.item])
             return cell
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        print(#function)
         if collectionView == verticalCollectionView {
-            if indexPath.row == (list.count - 3) && isEnd == false {
-                if let text = searchText {
-                    currentPage += 1
-                    callRequest(query: text, currentPage: currentPage)
-                }
+            if indexPath.row == (viewModel.list.count - 3) && viewModel.isEnd == false {
+                viewModel.currentPage += 1
+                viewModel.input.indexpath.value = ()
             }
         }
     }
@@ -154,7 +135,7 @@ extension ResultViewController: ViewDesignProtocol {
     
     func configureView() {
         view.backgroundColor = .black
-        title = searchText
+        title = viewModel.input.text.value
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
     }
 }

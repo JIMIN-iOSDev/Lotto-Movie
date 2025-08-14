@@ -27,10 +27,9 @@ class ShopViewModel {
     
     private func navigationResultVC(text: String) -> ResultViewController {
         let vc = ResultViewController()
-        vc.searchText = text
-        vc.list.removeAll()
-        vc.currentPage = 0
-        vc.callRequest(query: text, currentPage: vc.currentPage)
+        vc.viewModel.input.text.value = text
+        vc.viewModel.list.removeAll()
+        vc.viewModel.currentPage = 0
         return vc   // 데이터를 설정한 VC
     }
 }

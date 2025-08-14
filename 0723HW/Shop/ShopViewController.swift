@@ -33,6 +33,7 @@ class ShopViewController: UIViewController {
         viewModel.navigation = { resultVC in
             self.navigateToResult(VC: resultVC)
         }
+        
         viewModel.clearSearchText = {
             self.searchBar.text = ""
         }
@@ -53,6 +54,8 @@ class ShopViewController: UIViewController {
 extension ShopViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         viewModel.searchButtonTapped(text: searchBar.text)
+        let vc = ResultViewController()
+        vc.viewModel.output.scrollToTop.value = ()
     }
 }
 

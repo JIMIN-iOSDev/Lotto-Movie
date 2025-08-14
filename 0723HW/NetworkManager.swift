@@ -13,15 +13,9 @@ class NetworkManager {
     static let shared = NetworkManager()
     private init() { }
     
-    func callRequest(query: String, currentPage: Int, success: @escaping (Shop) -> Void, fail: @escaping () -> Void) {
-        let url = "https://openapi.naver.com/v1/search/shop.json?query=\(query)&display=30&start=\(currentPage * 30 + 1)"
-        let header: HTTPHeaders = [
-            "X-Naver-Client-Id": "PfZWdQl4Ow2hZsu3tGQI",
-            "X-Naver-Client-Secret": "4GzFGmEtFr"
-        ]
-        
-        AF.request(url, method: .get, headers: header)
-            .responseDecodable(of: Shop.self) { response in
+    func callRequest<T: Decodable>(api: ShopRouter, type: T.Type, success: @escaping (T) -> Void, fail: @escaping () -> Void) {
+        AF.request(api.endpoint, headers: api.header)
+            .responseDecodable(of: T.self) { response in
                 switch response.result {
                 case .success(let value):
                     success(value)
